@@ -1,6 +1,6 @@
 <?php
 
-class SknicTest extends CDbTestCase {
+class SknicTest extends PHPUnit_Framework_TestCase {
 	
 	public $pass = false; // please do not commit this password
 
@@ -52,37 +52,6 @@ class SknicTest extends CDbTestCase {
 		
 		
 		unlink($sessionFile);
-	}
-
-	public function testYiiCacheStorage() {
-		
-		require_once 'sknic/SessionStorage.php';
-		
-		$cache = new \sknic\YiiCacheSessionStorage(Yii::app()->cache);
-		$cache->set('hsdkagjaslkf');
-		$this->assertEquals('hsdkagjaslkf', $cache->get());
-		
-		$cache = new \sknic\YiiCacheSessionStorage(Yii::app()->cache);
-		$this->assertEquals('hsdkagjaslkf', $cache->get());
-	}
-	
-	
-	public function testYiiCacheStorageLocking() {
-		require_once 'sknic/SessionStorage.php';
-		
-		$cache = new \sknic\YiiCacheSessionStorage(Yii::app()->cache);
-		$cache2 = new \sknic\YiiCacheSessionStorage(Yii::app()->cache);
-		
-		
-		$this->assertTrue($cache->lock());
-		$this->assertTrue($cache->lock());
-		$this->assertFalse($cache2->lock());
-		
-		$cache->unlock();
-		$this->assertTrue($cache2->lock());
-		
-		$cache->unlock();
-		$this->assertFalse($cache->lock());
 	}
 
 	public function testLogin() {
@@ -169,5 +138,31 @@ class SknicTest extends CDbTestCase {
 		$api->setPassword($this->pass);
 		
 //		$this->assertTrue($api->change('dfgsdfgasdfgasds', array('nserver1'=>'ns1.websupport.sk')));
+	}
+
+	public function testOwnerChange() {
+		if (!$this->pass) {
+			return;
+		}
+		require_once 'sknic/SknicOwnerChange.php';
+
+		$api = new \sknic\SknicOwnerChange();
+		$api->setUsername('WEBS-0001');
+		$api->setPassword($this->pass);
+#		$this->assertTrue($api->change('psbralce', 'WEBS-0001'));
+#		file_put_contents('/tmp/form_to_sign.pdf', $api->getPdf());
+	}
+
+	public function testTransfer() {
+		if (!$this->pass) {
+			return;
+		}
+		require_once 'sknic/SknicTransfer.php';
+
+		$api = new \sknic\SknicTransfer();
+		$api->setUsername('WEBS-0001');
+		$api->setPassword($this->pass);
+//		$this->assertTrue($api->change('connectivity'));
+//		file_put_contents('/tmp/form_to_sign.pdf', $api->getPdf());
 	}
 }

@@ -1,0 +1,20 @@
+{
+	"name": "capkovic/sknic-api",
+	"description": "Automating operations on sk-nic.sk webpage.",
+	"license": "GPL-3.0+",
+	"authors": [
+		{
+			"name": "Matej Capkovic",
+			"email": "capkovic@gmail.com",
+			"role": "Developer"
+		}
+	],
+	"support": {
+		"source": "https://github.com/capkovic/sknic-api"
+	},
+	"autoload": {
+		"psr-4": {
+			"sknic\\": "sknic/"
+		}
+	}
+}

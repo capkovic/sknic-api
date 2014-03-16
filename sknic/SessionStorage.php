@@ -23,6 +23,7 @@ class FileSessionStorage extends SessionStorage {
 		$this->file = $file;
 		if (!file_exists($this->file)) {
 			file_put_contents($this->file, serialize(''));
+			chmod($this->file, 0600);
 		}
 	}
 	
@@ -73,56 +74,6 @@ class FileSessionStorage extends SessionStorage {
 			}
 		}
 		return $this->fp;
-	}
-}
-
-class YiiCacheSessionStorage extends SessionStorage {
-	
-	protected $cache;
-	protected $sessionCacheKey = 'sknic-session-cache';
-	protected $sessionLockKey = 'sknic-session-lock';
-	protected $locked = false;
-
-	public function __construct($cacheComponent = null) {
-		if ($cacheComponent) {
-			$this->setCacheComponent($cacheComponent);
-		}
-	}
-
-	public function setCacheComponent(\ICache $c) {
-		$this->cache = $c;
-	}
-	
-	public function set($v) {
-		$this->cache->set($this->sessionCacheKey, $v);
-	}
-
-	public function get() {
-		return $this->cache->get($this->sessionCacheKey);
-	}
-	
-	public function lock() {
-		if ($this->locked) {
-			return true;
-		}
-		if (!$this->cache->get($this->sessionLockKey)) { // TODO: fix this (its not locking), or remove Yii caching entirely
-			$this->cache->set($this->sessionLockKey, true, 120);
-			$this->locked = true;
-			return true;
-		}
-		return false;
-	}
-	
-	public function unlock() {
-		if ($this->locked) {
-			$this->cache->set($this->sessionLockKey, false);
-			$this->locked = false;
-		}
-		return true;
-	}
-
-	public function __destruct() {
-		$this->unlock();
 	}
 }
 

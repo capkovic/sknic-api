@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit 
+	colors="true"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	stopOnFailure="false">
+	<testsuites>
+		<testsuite name="Sknic-api Test Suite">
+			<directory>./tests</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>
