@@ -77,7 +77,8 @@ class SknicApi {
 	protected $username;
 	protected $password;
 	protected $lockTimeout = 60;
-
+	public $wkhtmltopdfPath = "wkhtmltopdf";
+	public $printHtml;
 
 	public function __construct($storage = null)
 	{
@@ -193,6 +194,33 @@ class SknicApi {
 	
 	public function unlock() {
 		$this->sessionStorage->unlock();
+	}
+	
+	public function getPdf() {
+		if($this->printHtml === ''){
+			throw new SknicTransferException("Print HTML not loaded!");
+		}
+		$rand = rand();
+		$html = $this->printHtml;
+		$html = str_replace("styles/nic.css", "https://www.sk-nic.sk/styles/nic.css", $html);
+		$html = str_replace("charset=iso-8859-2", "charset=utf-8", $html);
+		$html = str_replace("<img src=\"", "<img src=\"https://www.sk-nic.sk/", $html);
+
+		$pathToHtml = "/tmp/sknic_owner_$rand.html";
+		$pathToPdf = "/tmp/sknic_owner_$rand.pdf";
+
+		file_put_contents($pathToHtml, $html);
+		$wkhtmlToPdfOutput = array();
+		exec($this->wkhtmltopdfPath." --encoding UTF8 $pathToHtml $pathToPdf 2>&1", $wkhtmlToPdfOutput);
+		unlink($pathToHtml);
+
+		if (file_exists($pathToPdf)) {
+			$pdf = file_get_contents($pathToPdf);
+			unlink($pathToPdf);
+		} else {
+			throw new SknicTransferException("wkhtmltopdf failed with error: ".implode(" ", $wkhtmlToPdfOutput));
+		}
+		return $pdf;
 	}
 }
 

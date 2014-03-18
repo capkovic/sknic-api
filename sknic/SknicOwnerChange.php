@@ -11,7 +11,6 @@ class SknicOwnerChange extends SknicApi {
 	protected $postDomChangeUserOkUrl = "main.apply.jsp;jsessionid={SESSID}?form=dom_ch_user_ok";
 	protected $getDomainInfoPrintUrl = "preview.jsp;jsessionid={SESSID}?id={PRINTID}";
 	protected $checkSessionTimeout = true;
-	public $wkhtmltopdfPath = "wkhtmltopdf";
 	
 	public function change($domain, $newOwner) {
 	
@@ -66,33 +65,6 @@ class SknicOwnerChange extends SknicApi {
 		}
 		
 		return true;
-	}
-	
-	public function getPdf(){
-		if($this->printHtml === ''){
-			throw new SknicOwnerChangeException("Print HTML not loaded!");
-		}
-		$rand = rand();
-		$html = $this->printHtml;
-		$html = str_replace("styles/nic.css", "https://www.sk-nic.sk/styles/nic.css", $html);
-		$html = str_replace("charset=iso-8859-2", "charset=utf-8", $html);
-		$html = str_replace("<img src=\"", "<img src=\"https://www.sk-nic.sk/", $html);
-
-		$pathToHtml = "/tmp/sknic_owner_$rand.html";
-		$pathToPdf = "/tmp/sknic_owner_$rand.pdf";
-
-		file_put_contents($pathToHtml, $html);
-		$wkhtmlToPdfOutput = "";
-		exec($this->wkhtmltopdfPath." --encoding UTF8 $pathToHtml $pathToPdf 2>&1", $wkhtmlToPdfOutput);
-		unlink($pathToHtml);
-
-		if (file_exists($pathToPdf)) {
-			$pdf = file_get_contents($pathToPdf);
-			unlink($pathToPdf);
-		} else {
-			throw new SknicOwnerChangeException("wkhtmltopdf failed with error: ".$wkhtmlToPdfOutput);
-		}
-		return $pdf;
 	}
 }
 

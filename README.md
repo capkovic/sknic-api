@@ -15,7 +15,7 @@ add this to composer.json
         }
     ],
     "require": {
-	"capkovic/sknic-api": "dev-master"
+        "capkovic/sknic-api": "dev-master"
     }
 ```
 
@@ -43,7 +43,7 @@ $api->setUsername('login');
 $api->setPassword('pass');
 $api->waitForLock(); // aquire lock, so other proccesses can't use this session
 try {
-    var_dump($api->registerDomain('newdomain', 'ABCD-0001'));
+    $api->registerDomain('newdomain', 'ABCD-0001');
 } catch (Exception $e) {
     var_dump($e); // error via exception
 }
@@ -59,7 +59,7 @@ $api->setUsername('login');
 $api->setPassword('pass');
 $api->waitForLock();
 try {
-    var_dump($api->payDomain('newdomain'));
+    $api->payDomain('newdomain');
 } catch (Exception $e) {
     var_dump($e);
 }
@@ -75,7 +75,7 @@ $api->setUsername('login');
 $api->setPassword('pass');
 $api->waitForLock();
 try {
-    var_dump($api->change('newdomain', array('nserver1'=>'ns1.mynameserver.sk')));
+    $api->change('newdomain', array('nserver1'=>'ns1.mynameserver.sk'));
 } catch (Exception $e) {
     var_dump($e);
 }
@@ -91,7 +91,8 @@ $api->setUsername('login');
 $api->setPassword('pass');
 $api->waitForLock();
 try {
-    var_dump($api->change('mydomain', 'ABCD-0001'));
+    $api->change('mydomain', 'ABCD-0001');
+    $pdf = $api->getPdf(); // form to sign
 } catch (Exception $e) {
     var_dump($e);
 }
@@ -107,7 +108,8 @@ $api->setUsername('login');
 $api->setPassword('pass');
 $api->waitForLock();
 try {
-    var_dump($api->change('mydomain'));
+    $api->change('mydomain');
+    $pdf = $api->getPdf(); // form to sign
 } catch (Exception $e) {
     var_dump($e);
 }

@@ -140,6 +140,7 @@ class SknicTest extends PHPUnit_Framework_TestCase {
 //		$this->assertTrue($api->change('dfgsdfgasdfgasds', array('nserver1'=>'ns1.websupport.sk')));
 	}
 
+
 	public function testOwnerChange() {
 		if (!$this->pass) {
 			return;
@@ -149,8 +150,8 @@ class SknicTest extends PHPUnit_Framework_TestCase {
 		$api = new \sknic\SknicOwnerChange();
 		$api->setUsername('WEBS-0001');
 		$api->setPassword($this->pass);
-#		$this->assertTrue($api->change('psbralce', 'WEBS-0001'));
-#		file_put_contents('/tmp/form_to_sign.pdf', $api->getPdf());
+//		$this->assertTrue($api->change('psbralce', 'WEBS-0001'));
+//		file_put_contents('/tmp/form_to_sign.pdf', $api->getPdf());
 	}
 
 	public function testTransfer() {
