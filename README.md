@@ -83,9 +83,6 @@ try {
 }
 $api->unlock();
 ```
-getDomainPrice - Price from generated Invoice
-getProformaPrice - Price from proforma (this price didn't include discounts)
-getProformaVariableSymbol - Variable symbol for Wire transfer
 
 
 NS change
