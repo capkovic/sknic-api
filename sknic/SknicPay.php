@@ -12,6 +12,9 @@ class SknicPay extends SknicApi {
 	protected $paySearchRetrieveUrl = "main.jsp;jsessionid={SESSID}?form=domain_cash_list&action=retrieve";
 	protected $paySelectedDomainUrl = "main.apply.jsp;jsessionid={SESSID}?form=domain_cash_list";
 	protected $domainCashListUrl = "main.jsp;jsessionid={SESSID}?form=domain_cash_list";
+	protected $domainProformUrl = "main.apply.jsp;jsessionid={SESSID}?id={TOKEN}&form=dom_proforma";
+	protected $domainProformListUrl = "main.jsp;jsessionid={SESSID}?form=dom_proforma";
+	protected $proformaSelectedDomainUrl = "main.apply.jsp;jsessionid={SESSID}?form=dom_proforma";
 	
 	
 	public function payDomain($domain) {
@@ -73,6 +76,113 @@ class SknicPay extends SknicApi {
 		return true;
 	}
 
+	public function getDomainPrice($domain) {
+		$token = $this->searchDomain($domain);
+
+		// payment summary post
+		try {
+			$url = str_replace("{SESSID}", $this->sessionStorage->get(), $this->paySelectedDomainUrl);
+			$response = new Response($this->httpConnection->post($url, array(
+				'pay' => $token,
+				'user_send' => 'Odosla» >>',
+				'cmd' => '2',
+			)));
+		} catch (\sknic\HttpRedirectException $error) {
+			$response = new Response($error->getResponse());
+		}
+
+		// payment summary list
+		try {
+			$url = str_replace("{SESSID}", $this->sessionStorage->get(), $this->domainCashListUrl);
+			$response = new Response($this->httpConnection->get($url));
+		} catch (\sknic\HttpRedirectException $error) {
+			$response = new Response($error->getResponse());
+		}
+
+		// Return total price for domain
+		$body = $response->convertBody('iso-8859-2');
+		$regex = '#<b>([^<]*)</b>#';
+		preg_match_all($regex, $body, $matches);
+		
+		return $matches[1][6];
+	}
+
+	
+	public function getProformaPrice($domain) {
+		$token = $this->searchDomain($domain);
+
+		// Reguest to view proforma
+		try {
+			$url = str_replace(array('{SESSID}','{TOKEN}'), array($this->sessionStorage->get(),$token), $this->domainProformUrl);
+			$response = new Response($this->httpConnection->get($url));
+		} catch (\sknic\HttpRedirectException $error) {
+			$response = new Response($error->getResponse());
+		}
+
+		// proforma summary list
+		try {
+			$url = str_replace("{SESSID}", $this->sessionStorage->get(), $this->domainProformListUrl);
+			$response = new Response($this->httpConnection->get($url));
+		} catch (\sknic\HttpRedirectException $error) {
+			$response = new Response($error->getResponse());
+		}
+
+		// Return total price for domain
+		$body = $response->convertBody('iso-8859-2');
+		$regex = '#<b>([^<]*)</b>#';
+		preg_match_all($regex, $body, $matches);
+		
+		return $matches[1][8];
+	}
+
+	public function getProformaVariableSymbol($domain) {
+		$token = $this->searchDomain($domain);
+
+		// Reguest to view proforma
+		try {
+			$url = str_replace(array('{SESSID}','{TOKEN}'), array($this->sessionStorage->get(),$token), $this->domainProformUrl);
+			$response = new Response($this->httpConnection->get($url));
+		} catch (\sknic\HttpRedirectException $error) {
+			$response = new Response($error->getResponse());
+		}
+
+		// proforma summary list
+		try {
+			$url = str_replace("{SESSID}", $this->sessionStorage->get(), $this->domainProformListUrl);
+			$response = new Response($this->httpConnection->get($url));
+		} catch (\sknic\HttpRedirectException $error) {
+			$response = new Response($error->getResponse());
+		}
+
+		// make final proforma
+		try {
+			$url = str_replace("{SESSID}", $this->sessionStorage->get(), $this->proformaSelectedDomainUrl);
+			$response = new Response($this->httpConnection->post($url, array(
+				'pay' => $token,
+				'user_send' => 'Odosla» >>',
+				'cmd' => '11',
+			)));
+		} catch (\sknic\HttpRedirectException $error) {
+			$response = new Response($error->getResponse());
+		}
+
+		// proforma summary list
+		try {
+			$url = str_replace("{SESSID}", $this->sessionStorage->get(), $this->domainProformListUrl);
+			$response = new Response($this->httpConnection->get($url));
+		} catch (\sknic\HttpRedirectException $error) {
+			$response = new Response($error->getResponse());
+		}
+
+		// Return variable symbol
+		$body = $response->convertBody('iso-8859-2');
+		$regex = '#<b>([^<]*)</b>#';
+		preg_match_all($regex, $body, $matches);
+		
+		return $matches[1][7];
+
+	}
+	
 	public function searchDomain($domain, $reloadSessionIfTimeouted = true) {
 		
 		// test login
