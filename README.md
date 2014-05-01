@@ -50,7 +50,7 @@ try {
 $api->unlock();
 ```
 
-Pay domain
+Pay domain - collective invoice
 ----------
 
 ```php
@@ -65,6 +65,28 @@ try {
 }
 $api->unlock();
 ```
+
+Pay domain - variables from Proforma for external processing
+----------
+
+```php
+$api = new \sknic\SknicPay();
+$api->setUsername('login');
+$api->setPassword('pass');
+$api->waitForLock();
+try {
+	echo $api->getDomainPrice('domain');
+	echo $api->getProformaPrice('domain');
+	echo $api->getProformaVariableSymbol('domain');
+} catch (Exception $e) {
+    var_dump($e);
+}
+$api->unlock();
+```
+- getDomainPrice - Price from generated Invoice
+- getProformaPrice - Price from proforma (this price didn't include discounts)
+- getProformaVariableSymbol - Variable symbol for Wire transfer
+
 
 NS change
 ---------
