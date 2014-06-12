@@ -8,12 +8,6 @@ Installation
 add this to composer.json
 
 ```
-    "repositories": [
-        {
-            "url": "https://github.com/capkovic/sknic-api.git",
-            "type": "git"
-        }
-    ],
     "require": {
         "capkovic/sknic-api": "dev-master"
     }
