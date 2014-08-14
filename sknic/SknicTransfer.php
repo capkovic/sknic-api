@@ -46,6 +46,7 @@ class SknicTransfer extends SknicApi {
 			'domain' => $domain,
 			'regNic' => $this->username,
 			'regId' => $regId,
+			'newRegId' => $regId,
 			'user_send' => 'Odosla» >>',
 		));
 
