@@ -80,9 +80,10 @@ class SknicApi {
 	public $wkhtmltopdfPath = "wkhtmltopdf";
 	public $printHtml;
 
-	public function __construct($storage = null)
+	public function __construct($storage = null, $sknicBasePath=null)
 	{
-		$this->httpConnection = new \sknic\HttpConnection($this->sknicBasePath);
+		$url = $sknicBasePath!==null ? $sknicBasePath : $this->sknicBasePath;
+		$this->httpConnection = new \sknic\HttpConnection($url);
 		$this->httpConnection->ssl = true;
 		$this->httpConnection->setPersistentConnection(true);
 		

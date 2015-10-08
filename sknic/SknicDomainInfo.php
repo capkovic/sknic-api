@@ -16,10 +16,6 @@ class SknicDomainInfo extends SknicApi {
 	protected $lastStateChange;
 	protected $expirationDate;
 
-	public function __construct() {
-		parent::__construct();
-	}
-
 	public function setDomain($domain){
 		$domainParts = explode('.', $domain);
 		if(count($domainParts) == 2 && $domainParts[1] == 'sk'){
